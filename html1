@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration Form</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 50%;
+    margin: 50px auto;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+h2, h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid white;
+    border-radius: 4px;
+}
+
+button {
+    width: calc(50% - 10px);
+    padding: 10px;
+    background: greenyellow;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+button:hover {
+    background: greenyellow;
+}
+
+.hidden {
+    display: none;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Student Registration Form</h2>
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="uno">UNO:</label>
+                <input type="text" id="uno" name="uno" required>
+            </div>
+            <div class="form-group">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="district">District:</label>
+                <input type="text" id="district" name="district" required>
+            </div>
+            <div class="form-group">
+                <label for="taluk">Taluk:</label>
+                <input type="text" id="taluk" name="taluk" required>
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" required>
+            </div>
+            <div class="form-group">
+                <label for="pincode">Pincode:</label>
+                <input type="text" id="pincode" name="pincode" required>
+            </div>
+            <div class="form-group">
+                <button type="button" id="saveButton">Save</button>
+                <button type="button" id="displayButton">Display</button>
+            </div>
+        </form>
+        <div id="displayArea" class="hidden">
+            <h3>Student Information</h3>
+            <pre id="studentData"></pre>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('saveButton').addEventListener('click', function() {
+    const student = {
+        uno: document.getElementById('uno').value,
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        address: document.getElementById('address').value,
+        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        district: document.getElementById('district').value,
+        taluk: document.getElementById('taluk').value,
+        city: document.getElementById('city').value,
+        pincode: document.getElementById('pincode').value,
+    };
+
+    localStorage.setItem('student', JSON.stringify(student));
+    alert('Student information saved successfully!');
+});
+
+document.getElementById('displayButton').addEventListener('click', function() {
+    const student = JSON.parse(localStorage.getItem('student'));
+
+    if (student) {
+        document.getElementById('studentData').textContent = JSON.stringify(student, null, 2);
+        document.getElementById('displayArea').classList.remove('hidden');
+    } else {
+        alert('No student data found. Please save the information first.');
+    }
+});
+    </script>
+    
+</body>
+</html>
+
+
