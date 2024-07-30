@@ -1,0 +1,109 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
+import sqlite3
+
+def setup_database():
+    conn = sqlite3.connect('student.db')
+    cursor = conn.cursor()
+
+    cursor.execute('''CREATE TABLE students (
+                      uno varchar(15) PRIMARY KEY,
+                      name varchar(20),
+                      course varchar(7),
+                      semester varchar(7),
+                      pas varchar(10),
+                      gender varchar(7))''')
+    conn.commit()
+    conn.close()
+
+def insert_data(uno, name, course, semester, pas, gender):
+    conn = sqlite3.connect('student.db')
+    cursor = conn.cursor()
+    try:
+        cursor.execute('INSERT INTO students (uno, name, course, semester, pas, gender) VALUES (?, ?, ?, ?, ?, ?)', 
+                       (uno, name, course, semester, pas, gender))
+        conn.commit()
+        messagebox.showinfo("Success", "Student data saved successfully")
+    except sqlite3.IntegrityError:
+        messagebox.showerror("Error", "UNO already exists")
+    conn.close()
+
+def fetch_data():
+    conn = sqlite3.connect('student.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM students')
+    data = cursor.fetchall()
+    conn.close()
+    return data
+
+def display_data():
+    data = fetch_data()
+    display_window = tk.Toplevel(form)
+    display_window.title("Registered Students")
+
+    columns = ('UUCMSNO', 'NAME', 'COURSE', 'SEMISTER', 'PASSWORD', 'GENDER')
+    tree = ttk.Treeview(display_window, columns=columns, show='headings')
+
+    for col in columns:
+        tree.heading(col, text=col)
+        tree.column(col, anchor=tk.CENTER)
+
+    for row in data:
+        tree.insert('', tk.END, values=row)
+
+    tree.pack(expand=True, fill='both')
+
+def save():
+    uno = etuno.get()
+    name = etname.get()
+    course = etcrs.get()
+    semester = etsem.get()
+    pas = etpas.get()
+    gender = gendervar.get()
+
+    if uno and name and course and semester and pas and gender:
+        insert_data(uno, name, course, semester, pas, gender)
+    else:
+        messagebox.showerror("Error", "All fields are required")
+
+form = tk.Tk()
+form.title("Student Registration Form")
+lblh=tk.Label(form,text="U15IG22S0020",font=("Arial",22,"bold"),fg="red")
+lblh.grid(row=0,column=1,sticky=tk.W,padx=10,pady=5)
+lbluno=tk.Label(form,text="UUCMSNO")
+lbluno.grid(row=1,column=0,sticky=tk.W)
+etuno=tk.Entry(form,width=25)
+etuno.grid(row=1,column=1,padx=10,pady=5)
+lblname=tk.Label(form,text="Name")
+lblname.grid(row=2,column=0,sticky=tk.W)
+etname=tk.Entry(form,width=25)
+etname.grid(row=2,column=1,padx=10,pady=5)
+choices=["BBA","BCA","BA","B.COM","BSC"]
+lblcrs=tk.Label(form,text="Course")
+lblcrs.grid(row=3,column=0,sticky=tk.W)
+etcrs=ttk.Combobox(form,values=choices,width=25)
+etcrs.grid(row=3,column=1,sticky=tk.W,padx=10,pady=10)
+choices=["1st","2nd","3rd","4th","5th","6th"]
+lblsem=tk.Label(form,text="semister")
+lblsem.grid(row=4,column=0,sticky=tk.W)
+etsem=ttk.Combobox(form,values=choices,width=25)
+etsem.grid(row=4,column=1,sticky=tk.W,padx=10,pady=10)
+lblpas=tk.Label(form,text="Password")
+lblpas.grid(row=5,column=0,sticky=tk.W)
+etpas=tk.Entry(form,width=25)
+etpas.grid(row=5,column=1,padx=10,pady=5)
+lblgender=tk.Label(form,text="Gender")
+lblgender.grid(row=6,column=0,sticky=tk.W)
+
+gendervar=tk.StringVar()
+gendervar.set("male")
+rdbmale=tk.Radiobutton(form,text="male",value="male",variable=gendervar)
+rdbfemale=tk.Radiobutton(form,text="female",value="female",variable=gendervar)
+rdbmale.grid(row=6,column=1,padx=5,pady=10)
+rdbfemale.grid(row=6,column=2,padx=5,pady=10)
+
+tk.Button(form, text="Save", command=save).grid(row=7, column=0, columnspan=1, pady=10)
+tk.Button(form, text="Display", command=display_data).grid(row=7, column=1, columnspan=2, pady=10)
+
+setup_database()
+form.mainloop()
